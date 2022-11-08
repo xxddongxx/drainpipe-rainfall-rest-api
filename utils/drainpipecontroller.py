@@ -6,37 +6,37 @@ from utils.util import Util
 
 class DrainPipeController(SeoulOpenApi):
     GUBN_CODE = {
-        "종로": "01",
-        "중": "02",
-        "용산": "03",
-        "성동": "04",
-        "광진": "05",
-        "동대문": "06",
-        "중랑": "07",
-        "성북": "08",
-        "강북": "09",
-        "도봉": "10",
-        "노원": "11",
-        "은평": "12",
-        "서대문": "13",
-        "마포": "14",
-        "양천": "15",
-        "강서": "16",
-        "구로": "17",
-        "금천": "18",
-        "영등포": "19",
-        "동작": "20",
-        "관악": "21",
-        "서초": "22",
-        "강남": "23",
-        "송파": "24",
-        "강동": "25",
+        "종로구": "01",
+        "중구": "02",
+        "용산구": "03",
+        "성동구": "04",
+        "광진구": "05",
+        "동대문구": "06",
+        "중랑구": "07",
+        "성북구": "08",
+        "강북구": "09",
+        "도봉구": "10",
+        "노원구": "11",
+        "은평구": "12",
+        "서대문구": "13",
+        "마포구": "14",
+        "양천구": "15",
+        "강서구": "16",
+        "구로구": "17",
+        "금천구": "18",
+        "영등포구": "19",
+        "동작구": "20",
+        "관악구": "21",
+        "서초구": "22",
+        "강남구": "23",
+        "송파구": "24",
+        "강동구": "25",
     }
 
     def __init__(self, gu_name):
         super(DrainPipeController, self).__init__()
         self.function_name = "DrainpipeMonitoringInfo/"
-        self.gu_name = gu_name
+        self.gu_name = Util().get_gu_name(gu_name)
 
     def set_IDN_to_set(self, row):
         """
@@ -45,8 +45,8 @@ class DrainPipeController(SeoulOpenApi):
         set_IDN = set()
         count_IDN = 0
 
-        for i in row:
-            set_IDN.add(i.get("IDN"))
+        for data in row:
+            set_IDN.add(data.get("IDN"))
             if count_IDN != len(set_IDN):
                 count_IDN = len(set_IDN)
             else:
@@ -80,16 +80,20 @@ class DrainPipeController(SeoulOpenApi):
 
         url = drain.get_url()
 
-        response_datas = drain.get_response_data_row(url)
+        response_data = drain.get_response_data_row(url)
 
-        IDN_set = drain.set_IDN_to_set(response_datas)
-        IDN_len = len(IDN_set) + 1
+        idn_set = drain.set_IDN_to_set(response_data)
+        idn_len = len(idn_set) + 1
 
-        # 최신 추출 데이터
-        resluts = []
+        # 최신 데이터 리스트
+        result = []
 
-        for row in response_datas[:-IDN_len:-1]:
-            data = drain.get_json_data(row)
-            resluts.append(data)
+        for data in response_data[:-idn_len:-1]:
+            json_data = drain.get_json_data(data)
+            result.append(json_data)
 
-        return resluts
+        return result
+
+    """
+    TODO 데이터 개수가 1000 이상일때 해결 필요
+    """
