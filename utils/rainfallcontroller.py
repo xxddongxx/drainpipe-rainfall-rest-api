@@ -30,7 +30,7 @@ class RainFallController(SeoulOpenApi):
         """
         서울 강우량 Url 생성
         """
-        return f"{self.host + self.key + self.type + self.function_name + self.start + self.end + self.gu_name}/"
+        return f"{self.host + self.key + self.type + self.function_name + str(self.start) + '/' + str(self.end) + '/' + self.gu_name}/"
 
     def get_response_data_row(self, url):
         """
