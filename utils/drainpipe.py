@@ -1,7 +1,6 @@
 class DrainPipe:
     def __init__(self, data):
-        # self.IDN = data.get("IDN")
-        self.IDN = data["IDN"]
+        self.IDN = data.get("IDN")
         self.GUBN = data.get("GUBN")
         self.GUBN_NAM = data.get("GUBN_NAM")
         self.MEA_YMD = data.get("MEA_YMD")
