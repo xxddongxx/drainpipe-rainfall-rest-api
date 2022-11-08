@@ -58,12 +58,30 @@ class DrainPipeController(SeoulOpenApi):
         """
         서울 하수관로 Url 생성
         """
-        return f"{self.host + self.key + self.type + self.function_name + self.start + self.end + self.GUBN_CODE.get(self.gu_name)}/{Util().get_latest_date_hour()}"
+        return f"{self.host + self.key + self.type + self.function_name + str(self.start) + '/' + str(self.end) + '/' + self.GUBN_CODE.get(self.gu_name)}/{Util().get_latest_date_hour()}"
 
-    def get_response_data_row(self, url):
+    def get_response_data_total_count(self, json_data):
         """
-        row data 추출
+        total count 추출
         """
+        return json_data.get("DrainpipeMonitoringInfo").get("list_total_count")
+
+    def get_response_latest_data_row(self, url):
+        """
+        최신 row data 추출
+        TODO List
+        1. ..../2022110804/2022110804/ -> 데이터 없을 때 최신 데이터(시간조절 or result code)
+        2. 과거데이터 만들 때 중복, 데이터 누적 고려
+        """
+        response = requests.get(url)
+        response_json = response.json()
+
+        # 최신 데이터를 불러오기 위한 url 생성
+        total_count = self.get_response_data_total_count(response_json)
+        self.start = total_count - (total_count - 999)
+        self.end = total_count
+        # 새로운 url
+        url = self.get_url()
         response = requests.get(url)
         response_json = response.json()
         return response_json.get("DrainpipeMonitoringInfo").get("row")
@@ -80,7 +98,7 @@ class DrainPipeController(SeoulOpenApi):
 
         url = drain.get_url()
 
-        response_data = drain.get_response_data_row(url)
+        response_data = drain.get_response_latest_data_row(url)
 
         idn_set = drain.set_IDN_to_set(response_data)
         idn_len = len(idn_set) + 1
@@ -93,7 +111,3 @@ class DrainPipeController(SeoulOpenApi):
             result.append(json_data)
 
         return result
-
-    """
-    TODO 데이터 개수가 1000 이상일때 해결 필요
-    """
