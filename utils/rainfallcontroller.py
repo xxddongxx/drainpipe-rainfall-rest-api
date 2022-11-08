@@ -1,16 +1,14 @@
 from utils.seoulopenapi import SeoulOpenApi
 import requests, json
 
+from utils.util import Util
+
 
 class RainFallController(SeoulOpenApi):
     def __init__(self, gu_name):
         super(RainFallController, self).__init__()
         self.function_name = "ListRainfallService/"
-
-        if gu_name[-1] == "구":
-            self.gu_name = gu_name
-        else:
-            self.gu_name = gu_name + "구"
+        self.gu_name = Util().get_gu_name(gu_name)
 
     def set_RAINGAUGE_CODE_to_set(self, row):
         """
@@ -19,8 +17,8 @@ class RainFallController(SeoulOpenApi):
         set_RAINGAUGE_CODE = set()
         count_RAINGAUGE_CODE = 0
 
-        for i in row:
-            set_RAINGAUGE_CODE.add(i.get("RAINGAUGE_CODE"))
+        for data in row:
+            set_RAINGAUGE_CODE.add(data.get("RAINGAUGE_CODE"))
             if count_RAINGAUGE_CODE != len(set_RAINGAUGE_CODE):
                 count_RAINGAUGE_CODE = len(set_RAINGAUGE_CODE)
             else:
@@ -54,16 +52,16 @@ class RainFallController(SeoulOpenApi):
 
         url = rainfall.get_url()
 
-        response_datas = rainfall.get_response_data_row(url)
+        response_data = rainfall.get_response_data_row(url)
 
-        RAINGAUGE_CODE_set = rainfall.set_RAINGAUGE_CODE_to_set(response_datas)
-        RAINGAUGE_CODE_len = len(RAINGAUGE_CODE_set) + 1
+        raingauge_code_set = rainfall.set_RAINGAUGE_CODE_to_set(response_data)
+        raingauge_code_len = len(raingauge_code_set) + 1
 
-        # 최신 데이터 추출
-        resluts = []
+        # 최신 데이터 리스트
+        result = []
 
-        for row in response_datas[: RAINGAUGE_CODE_len - 1]:
-            data = rainfall.get_json_data(row)
-            resluts.append(data)
+        for data in response_data[: raingauge_code_len - 1]:
+            json_data = rainfall.get_json_data(data)
+            result.append(json_data)
 
-        return resluts
+        return result
