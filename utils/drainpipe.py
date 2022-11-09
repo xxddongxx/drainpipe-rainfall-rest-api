@@ -1,8 +1,8 @@
 class DrainPipe:
-    def __init__(self, data):
+    def __init__(self, data, gu_name):
         self.IDN = data.get("IDN")
         self.GUBN = data.get("GUBN")
-        self.GUBN_NAM = data.get("GUBN_NAM")
+        self.GUBN_NAM = gu_name
         self.MEA_YMD = data.get("MEA_YMD")
         self.MEA_WAL = data.get("MEA_WAL")
         self.SIG_STA = data.get("SIG_STA")

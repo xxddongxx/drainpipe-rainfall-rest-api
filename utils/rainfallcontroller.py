@@ -1,5 +1,6 @@
+from utils.rainfall import RainFall
 from utils.seoulopenapi import SeoulOpenApi
-import requests, json
+import requests
 
 from utils.util import Util
 
@@ -40,28 +41,16 @@ class RainFallController(SeoulOpenApi):
         response_json = response.json()
         return response_json.get("ListRainfallService").get("row")
 
-    def get_json_data(self, data):
-        """
-        row data to json
-        """
-        dumps_json = json.dumps(data)
-        return json.loads(dumps_json)
+    def get_result(self, url):
+        response_data = self.get_response_data_row(url)
 
-    def get_result(self):
-        rainfall = RainFallController(self.gu_name)
-
-        url = rainfall.get_url()
-
-        response_data = rainfall.get_response_data_row(url)
-
-        raingauge_code_set = rainfall.set_RAINGAUGE_CODE_to_set(response_data)
+        raingauge_code_set = self.set_RAINGAUGE_CODE_to_set(response_data)
         raingauge_code_len = len(raingauge_code_set) + 1
 
         # 최신 데이터 리스트
         result = []
 
         for data in response_data[: raingauge_code_len - 1]:
-            json_data = rainfall.get_json_data(data)
-            result.append(json_data)
+            result.append(RainFall(data))
 
         return result
