@@ -2,10 +2,11 @@
 랩큐 Open API 방식의 공공 데이터를 수집, 가공하여 REST API 개발
 
 # :bookmark_tabs: 목차
-* [Drainpipe Raiinfall](#Drainpipe-Rainfall-REST-API)
+* [Drainpipe Raiinfall](#drainpipe-fainfall-rest-api-service)
   * [목차](#목차)
   * [프로젝트 요구사항](#프로젝트-요구사항)
   * [API Docs](#api-docs)
+    * [현황 조회](#현황-조회)
 
 
 # :clipboard: 프로젝트 요구사항
@@ -14,10 +15,12 @@
 3. 데이터는 JSON으로 전달
 
 # :books: API Docs
+
 ## 현황 조회
 > Method: GET<br>
-URL: /api/v1/drainpiperainfall/latest/?gu_name="구이름"
+URL: /api/v1/drainpiperainfall/latest/?gu_name="구이름"<br>
 Description: 구이름으로 조회된 하수관로 수위, 강우량 최신 데이터 조회
+
 * Response
 ```json
 "message": "Success",
@@ -64,6 +67,5 @@ Description: 구이름으로 조회된 하수관로 수위, 강우량 최신 데
             "RECEIVE_TIME": "2022-11-09 15:19"
         }
     ]
-}
 }
 ```
