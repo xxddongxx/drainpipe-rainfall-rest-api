@@ -38,7 +38,7 @@ class Util:
 
     def get_gu_name(self, gu_name):
         """
-        '구'가 포함 확인
+        '구' 포함, 미 포함
         """
         if self.is_last_str(gu_name):
             return gu_name

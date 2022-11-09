@@ -1,6 +1,9 @@
+from rest_framework import status
+from rest_framework.response import Response
+
 from utils.drainpipe import DrainPipe
 from utils.seoulopenapi import SeoulOpenApi
-import requests, json
+import requests
 
 from utils.util import Util
 
@@ -59,6 +62,16 @@ class DrainPipeController(SeoulOpenApi):
         """
         서울 하수관로 Url 생성
         """
+        keys = self.GUBN_CODE.keys()
+        if self.gu_name not in keys:
+            return Response(
+                {
+                    "message": "검색한 군 이름이 없습니다.",
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "result": {},
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         return f"{self.host + self.key + self.type + self.function_name + str(self.start) + '/' + str(self.end) + '/' + self.GUBN_CODE.get(self.gu_name)}/{Util().get_latest_date_hour()}"
 
     def get_response_data_total_count(self, json_data):
@@ -73,12 +86,8 @@ class DrainPipeController(SeoulOpenApi):
     def get_response_latest_data_row(self, url):
         """
         최신 row data 추출
-        TODO List
-        1. ..../2022110804/2022110804/ -> 데이터 없을 때 최신 데이터(시간조절 or result code)
-        2. 과거데이터 만들 때 중복, 데이터 누적 고려
         """
         response = requests.get(url)
-        # TODO 예외처리
         response_json = response.json()
 
         # 데이터 개수가 1000개 이상일겨우
