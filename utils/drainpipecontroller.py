@@ -108,12 +108,12 @@ class DrainPipeController(SeoulOpenApi):
         response_data = self.get_response_latest_data_row(url)
 
         idn_set = self.set_IDN_to_set(response_data)
-        idn_len = len(idn_set) + 1
+        idn_len = len(idn_set)
 
         # 최신 데이터 리스트
         result = []
 
-        for data in response_data[:-idn_len:-1]:
+        for data in response_data[: -(idn_len + 1) : -1]:
             result.append(DrainPipe(data, self.gu_name))
 
         return result

@@ -22,7 +22,8 @@ class Least(APIView):
 
             rainfall = RainFallController(gu_name)
             rainfall_url = rainfall.get_url()
-            rainfall_result = rainfall.get_result(rainfall_url)
+            datas, set_len = rainfall.get_datas_set_len(rainfall_url)
+            rainfall_result = rainfall.get_result(datas, set_len)
 
             drain_serializer = serializers.DrainPipeSerializer(drain_result, many=True)
             rainfall_serializer = serializers.RainFallSerializer(
@@ -35,6 +36,44 @@ class Least(APIView):
                     "status": status.HTTP_200_OK,
                     "result": {
                         "Drain_Pipe": drain_serializer.data,
+                        "RainFall": rainfall_serializer.data,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as error:
+            return Response(
+                {
+                    "message": "데이터를 찾을 수 없습니다.",
+                    "status": status.HTTP_404_NOT_FOUND,
+                    "result": {},
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
+class Today(APIView):
+    def get(self, request):
+        """
+        오늘 데이터 조회
+        GET /api/v1/drainpiperainfall/today/
+        """
+        gu_name = request.GET["gu_name"]
+        try:
+            rainfall = RainFallController(gu_name)
+            rainfall_url = rainfall.get_url()
+            datas, set_len = rainfall.get_datas_set_len(rainfall_url)
+            rainfall_result = rainfall.get_today_result(datas, set_len)
+
+            rainfall_serializer = serializers.RainFallSerializer(
+                rainfall_result, many=True
+            )
+
+            return Response(
+                {
+                    "message": "Success",
+                    "status": status.HTTP_200_OK,
+                    "result": {
                         "RainFall": rainfall_serializer.data,
                     },
                 },
