@@ -1,7 +1,10 @@
+from config import settings
+
+
 class SeoulOpenApi:
     def __init__(self):
         self.host = "http://openapi.seoul.go.kr:8088/"
-        self.key = "765076694b68796539307869467670/"
+        self.key = settings.SEOUL_OPEN_API_KEY + "/"
         self.function_name = ""
         self.type = "json/"
         self.start = 1

@@ -1,3 +1,4 @@
+from utils.drainpipe import DrainPipe
 from utils.seoulopenapi import SeoulOpenApi
 import requests, json
 
@@ -66,6 +67,9 @@ class DrainPipeController(SeoulOpenApi):
         """
         return json_data.get("DrainpipeMonitoringInfo").get("list_total_count")
 
+    def is_over_total_count(self, total_count):
+        return bool(total_count > 1000)
+
     def get_response_latest_data_row(self, url):
         """
         최신 row data 추출
@@ -74,40 +78,33 @@ class DrainPipeController(SeoulOpenApi):
         2. 과거데이터 만들 때 중복, 데이터 누적 고려
         """
         response = requests.get(url)
+        # TODO 예외처리
         response_json = response.json()
 
-        # 최신 데이터를 불러오기 위한 url 생성
+        # 데이터 개수가 1000개 이상일겨우
+        # 최신 데이터를 다시 불러오기 위한 url 생성
         total_count = self.get_response_data_total_count(response_json)
-        self.start = total_count - (total_count - 999)
-        self.end = total_count
-        # 새로운 url
-        url = self.get_url()
-        response = requests.get(url)
-        response_json = response.json()
+
+        if self.is_over_total_count(total_count):
+
+            self.start = total_count - (total_count - 999)
+            self.end = total_count
+            # 새로운 url
+            url = self.get_url()
+            response = requests.get(url)
+            response_json = response.json()
         return response_json.get("DrainpipeMonitoringInfo").get("row")
 
-    def get_json_data(self, data):
-        """
-        row data to json
-        """
-        dumps_json = json.dumps(data)
-        return json.loads(dumps_json)
+    def get_result(self, url):
+        response_data = self.get_response_latest_data_row(url)
 
-    def get_result(self):
-        drain = DrainPipeController(self.gu_name)
-
-        url = drain.get_url()
-
-        response_data = drain.get_response_latest_data_row(url)
-
-        idn_set = drain.set_IDN_to_set(response_data)
+        idn_set = self.set_IDN_to_set(response_data)
         idn_len = len(idn_set) + 1
 
         # 최신 데이터 리스트
         result = []
 
         for data in response_data[:-idn_len:-1]:
-            json_data = drain.get_json_data(data)
-            result.append(json_data)
+            result.append(DrainPipe(data, self.gu_name))
 
         return result

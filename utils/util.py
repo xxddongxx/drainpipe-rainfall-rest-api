@@ -30,16 +30,11 @@ class Util:
 
         return an_hour_ago + latest_hour
 
-    def get_check_date(self):
-        year, month, day, hour, minute = self.set_year_month_day_hour_minute()
-        check_date = datetime(year, month, day, hour, minute).strftime("%Y-%m-%d %H:%M")
-        return check_date
-
     def is_last_str(self, text):
         """
         입력받은 구이름에 마지막 문자열이 구인지 확인
         """
-        return text[-1] == "구"
+        return bool(text[-1] == "구")
 
     def get_gu_name(self, gu_name):
         """
