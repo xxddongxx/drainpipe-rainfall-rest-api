@@ -1,5 +1,9 @@
+import time
+
 from requests.exceptions import MissingSchema
-from rest_framework import status
+from rest_framework import status, generics
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -75,7 +79,7 @@ class RainFallToday(APIView):
                     "message": "Success",
                     "status": status.HTTP_200_OK,
                     "result": {
-                        "now_total_count": rainfall_total_count,
+                        "total_count": rainfall_total_count,
                         "RainFall": rainfall_serializer.data,
                     },
                 },
@@ -92,7 +96,7 @@ class RainFallToday(APIView):
             )
 
 
-class DrainPipeToday(APIView):
+class DrainPipeToday(generics.GenericAPIView):
     def get(self, request):
         """
         오늘 데이터 조회
@@ -109,12 +113,13 @@ class DrainPipeToday(APIView):
             drain_serializer = serializers.DrainPipeSerializer(
                 drain_today_result, many=True
             )
+
             return Response(
                 {
                     "message": "Success",
                     "status": status.HTTP_200_OK,
                     "result": {
-                        "now_total_count": drain_total_count,
+                        "total_count": drain_total_count,
                         "Drain_Pipe": drain_serializer.data,
                     },
                 },
