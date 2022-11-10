@@ -30,6 +30,11 @@ class Util:
 
         return an_hour_ago + latest_hour
 
+    def make_today_times(self, count_hour):
+        year, month, day, hour, minute = self.set_year_month_day_hour_minute()
+        today_time = datetime(year, month, day, count_hour).strftime("%Y%m%d%H") + "/"
+        return today_time + today_time
+
     def is_last_str(self, text):
         """
         입력받은 구이름에 마지막 문자열이 구인지 확인
@@ -38,7 +43,7 @@ class Util:
 
     def get_gu_name(self, gu_name):
         """
-        '구'가 포함 확인
+        '구' 포함, 미 포함
         """
         if self.is_last_str(gu_name):
             return gu_name
