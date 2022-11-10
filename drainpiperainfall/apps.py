@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DrainpiprainfallConfig(AppConfig):
+class DrainpiperainfallConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "drainpiprainfall"
+    name = "drainpiperainfall"
