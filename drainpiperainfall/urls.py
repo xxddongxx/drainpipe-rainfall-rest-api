@@ -20,5 +20,6 @@ from drainpiperainfall import views
 
 urlpatterns = [
     path("latest/", views.Least.as_view()),
-    path("rainfall/today/", views.Today.as_view()),
+    path("rainfall/today/", views.RainFallToday.as_view()),
+    path("drainpipe/today/", views.DrainPipeToday.as_view()),
 ]
