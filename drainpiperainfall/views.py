@@ -15,15 +15,15 @@ class Least(APIView):
         """
         gu_name = request.GET["gu_name"]
         try:
-
             drain = DrainPipeController(gu_name)
-            drain_url = drain.get_url()
-            drain_result = drain.get_result(drain_url)
+            drain_url = drain.get_latest_url()
+            drain_datas, drain_set_len = drain.get_datas_set_len(drain_url)
+            drain_result = drain.get_result(drain_datas, drain_set_len)
 
             rainfall = RainFallController(gu_name)
             rainfall_url = rainfall.get_url()
-            datas, set_len = rainfall.get_datas_set_len(rainfall_url)
-            rainfall_result = rainfall.get_result(datas, set_len)
+            rainfall_datas, rainfall_set_len = rainfall.get_datas_set_len(rainfall_url)
+            rainfall_result = rainfall.get_result(rainfall_datas, rainfall_set_len)
 
             drain_serializer = serializers.DrainPipeSerializer(drain_result, many=True)
             rainfall_serializer = serializers.RainFallSerializer(
@@ -56,7 +56,7 @@ class Today(APIView):
     def get(self, request):
         """
         오늘 데이터 조회
-        GET /api/v1/drainpiperainfall/today/
+        GET /api/v1/drainpiperainfall/rainfall/today/
         """
         gu_name = request.GET["gu_name"]
         try:
