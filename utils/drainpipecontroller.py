@@ -104,7 +104,6 @@ class DrainPipeController(SeoulOpenApi):
         """
         response = requests.get(url)
         response_json = response.json()
-        print("response_json >>>>> ", response_json)
 
         # 데이터 개수가 1000개 이상일겨우
         # 최신 데이터를 다시 불러오기 위한 url 생성
