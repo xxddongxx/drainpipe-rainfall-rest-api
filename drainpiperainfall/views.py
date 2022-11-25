@@ -1,13 +1,7 @@
-import time
-
 from django.core.paginator import Paginator
-from requests.exceptions import MissingSchema
 from rest_framework import status, generics
-from rest_framework.generics import ListAPIView
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from drainpiperainfall import serializers
 from utils.drainpipecontroller import DrainPipeController
 from utils.rainfallcontroller import RainFallController
@@ -16,6 +10,7 @@ from utils.rainfallcontroller import RainFallController
 class Least(APIView):
     def get(self, request):
         """
+        최신 데이터 조회
         GET /api/v1/drainpiperainfall/latest/?gu_name="용산구" or "용산"
         """
         gu_name = request.GET["gu_name"]
