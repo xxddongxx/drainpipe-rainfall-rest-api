@@ -104,7 +104,6 @@ class DrainPipeController(SeoulOpenApi):
         """
         response = requests.get(url)
         response_json = response.json()
-        print("response_json >>>>> ", response_json)
 
         # 데이터 개수가 1000개 이상일겨우
         # 최신 데이터를 다시 불러오기 위한 url 생성
@@ -204,6 +203,6 @@ class DrainPipeController(SeoulOpenApi):
         """
         thread로 실행하여 시간 단축
         """
-        with ThreadPoolExecutor(50) as executor:
+        with ThreadPoolExecutor() as executor:
             result = sum(executor.map(self.method_in_thread, url_list), [])
         return result
