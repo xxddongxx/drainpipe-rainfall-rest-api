@@ -204,6 +204,6 @@ class DrainPipeController(SeoulOpenApi):
         """
         thread로 실행하여 시간 단축
         """
-        with ThreadPoolExecutor(50) as executor:
+        with ThreadPoolExecutor() as executor:
             result = sum(executor.map(self.method_in_thread, url_list), [])
         return result
