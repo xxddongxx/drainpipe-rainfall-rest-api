@@ -52,3 +52,19 @@ class TestDrainPipeRainfallAPI(APITestCase):
         self.assertIn("total_count", response_data)
         self.assertIn("total_page", response_data)
         self.assertIn("result", response_data)
+
+    def test_drainpipe_today_success(self):
+        """
+        현 시간까지의 하수관 수위 데이터 조회 성공 테스트
+        """
+        drainpipe_today_url = f"{PATH}drainpipe/today/?gu_name={self.gu_name}&page=1"
+        response = self.client.get(drainpipe_today_url)
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response_data, dict)
+        self.assertIn("message", response_data)
+        self.assertIn("status", response_data)
+        self.assertIn("total_count", response_data)
+        self.assertIn("total_page", response_data)
+        self.assertIn("result", response_data)
