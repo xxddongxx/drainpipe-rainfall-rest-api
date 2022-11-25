@@ -1,5 +1,6 @@
 import time
 
+from django.core.paginator import Paginator
 from requests.exceptions import MissingSchema
 from rest_framework import status, generics
 from rest_framework.generics import ListAPIView
@@ -68,20 +69,20 @@ class RainFallToday(APIView):
             rainfall_url = rainfall.get_url()
             datas, set_len = rainfall.get_datas_set_len(rainfall_url)
             rainfall_result = rainfall.get_today_result(datas, set_len)
-            rainfall_total_count = len(rainfall_result)
 
+            page = request.GET.get("page", 1)
+            paginator = Paginator(rainfall_result, 100)
             rainfall_serializer = serializers.RainFallSerializer(
-                rainfall_result, many=True
+                paginator.get_page(page), many=True
             )
 
             return Response(
                 {
                     "message": "Success",
                     "status": status.HTTP_200_OK,
-                    "result": {
-                        "total_count": rainfall_total_count,
-                        "RainFall": rainfall_serializer.data,
-                    },
+                    "total_count": paginator.count,
+                    "total_page": paginator.num_pages,
+                    "result": rainfall_serializer.data,
                 },
                 status=status.HTTP_200_OK,
             )
@@ -108,20 +109,20 @@ class DrainPipeToday(generics.GenericAPIView):
             drain_url = drain.get_latest_url()
             drain_today_url_list = drain.make_today_url_list(drain_url)
             drain_today_result = drain.thread_executor_method(drain_today_url_list)
-            drain_total_count = len(drain_today_result)
 
+            page = request.GET.get("page", 1)
+            paginator = Paginator(drain_today_result, 1000)
             drain_serializer = serializers.DrainPipeSerializer(
-                drain_today_result, many=True
+                paginator.get_page(page), many=True
             )
 
             return Response(
                 {
                     "message": "Success",
                     "status": status.HTTP_200_OK,
-                    "result": {
-                        "total_count": drain_total_count,
-                        "Drain_Pipe": drain_serializer.data,
-                    },
+                    "total_count": paginator.count,
+                    "total_page": paginator.num_pages,
+                    "result": drain_serializer.data,
                 },
                 status=status.HTTP_200_OK,
             )
